@@ -4,8 +4,6 @@ from tkinter import filedialog
 import os
 
 
-        
-
 def browseFiles():
     filename = filedialog.askopenfilename(initialdir = "/",title = "Select a File",filetypes = (("Video files","*.mp4*"),("all files","*.*")))
     text_entry.insert(1,filename)
@@ -19,7 +17,7 @@ wind.title("Video transcoding")  # Set window title
 frame = Frame(wind)
 # Create pane title, content, font, color
 title_lab = tk.Label(wind, text="Video transcoding", font="Arial 16 bold",width=14)
-result_lab = tk.Label(wind, text="Place Holder", font="Arial 16 bold",width=14)
+result_lab = tk.Label(wind, text="Place Holder", font="Arial 16 bold",width=18)
 textlab = tk.Label(wind, text="Fichier source", font="Arial 14 bold",fg="blue", width=12)  # Create a form name, and set the font, color, and size
 button_explore = tk.Button(wind,text = "Browse Files",command = browseFiles)
 # Create the input control entry, that is, the form
@@ -32,14 +30,17 @@ R3 = tk.Radiobutton(frame, text="100MB", variable=limit_file_size, value=1000000
 R1.invoke()
 
 def compress():
+
+    # Bitrate = file size / (number of minutes * .0075)
     video_full_path = text_entry.get()
     max_size = limit_file_size.get()
+
     ff = '/bin/ffmpeg.exe'
     ff1 = os.getcwd()
     ff = ff1+ff  
     result = eval(repr(ff).replace('\\','/'))
     ff = result.replace('//','/')
-    cmd = ff+' -i '+video_full_path+' -fs '+str(max_size)+' result.mp4'
+    cmd = ff+' -i "'+video_full_path+'" -fs '+str(max_size)+' result.mp4'
 
     if os.system(cmd) == 0: 	#Judge the execution result and transcode
         result_lab.config(text="Video transcoding successful")
