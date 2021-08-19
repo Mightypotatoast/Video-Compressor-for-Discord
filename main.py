@@ -42,7 +42,7 @@ def compress():
     ff = result.replace('//','/')
     cmd = ff+' -i "'+video_full_path+'" -fs '+str(max_size)+' result.mp4'
 
-    if os.system(cmd) == 0: 	#Judge the execution result and transcode
+    if os.system(cmd) == 0:     #Judge the execution result and transcode
         result_lab.config(text="Video transcoding successful")
     else:
         result_lab.config(text="Video transcoding failed")
