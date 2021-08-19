@@ -12,17 +12,19 @@ def radioRefresh():
     print(limit_file_size.get())
 
 wind = tk.Tk()  # Establishing top level control wind
-wind.geometry("500x200")  # Set window size
+wind.geometry("250x200")  # Set window size
 wind.title("Video transcoding")  # Set window title
-frame = Frame(wind)
+
 # Create pane title, content, font, color
 title_lab = tk.Label(wind, text="Video transcoding", font="Arial 16 bold",width=14)
 result_lab = tk.Label(wind, text="", font="Arial 16 bold",width=18)
-textlab = tk.Label(wind, text="Fichier source", font="Arial 14 bold",fg="blue", width=12)  # Create a form name, and set the font, color, and size
-button_explore = tk.Button(wind,text = "Browse Files",command = browseFiles)
-# Create the input control entry, that is, the form
-text_entry = tk.Entry(wind, width=15, font="Arial 14 bold")
 
+frame2 = Frame(wind)
+# Create the input control entry, that is, the form
+text_entry = tk.Entry(frame2, width=15, font="Arial 12 bold")
+button_explore = tk.Button(frame2,text = "Source file",command = browseFiles)
+
+frame = Frame(wind)
 limit_file_size = IntVar()
 R1 = tk.Radiobutton(frame, text="8MB", variable=limit_file_size, value=8000,command=radioRefresh)
 R2 = tk.Radiobutton(frame, text="50MB", variable=limit_file_size, value=50000,command=radioRefresh)
@@ -42,9 +44,10 @@ btn = tk.Button(wind, text="Go !",font="Arial 14 bold", fg="blue", width=8,comma
 
 
 title_lab.grid(column = 2, row = 1)  # Set title position
-textlab.grid(column = 1, row = 5)  # Set form name location
-button_explore.grid(column = 3, row = 5)  # Set button position
-text_entry.grid(column = 2, row = 5)  # Set control location
+
+frame2.grid(column = 2, row = 5)
+text_entry.pack(side= LEFT)  # Set control location
+button_explore.pack(side= LEFT)  # Set button position
 
 frame.grid(column = 2, row = 8)
 R1.pack(side= LEFT)  # Set control location
