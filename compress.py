@@ -1,6 +1,6 @@
 import os
+os.environ['path'] = 'bin/'
 import ffmpeg
-
 def compress_video(video_full_path, size_upper_bound, two_pass=True, filename_suffix='1'):
     """
     Compress video file to max-supported size.
@@ -71,7 +71,7 @@ def compress_video(video_full_path, size_upper_bound, two_pass=True, filename_su
         if os.path.getsize(output_file_name) <= size_upper_bound * 1024:
             return output_file_name
         elif os.path.getsize(output_file_name) < os.path.getsize(video_full_path):  # Do it again
-            return save_compressed_video(output_file_name, size_upper_bound)
+            return compress_video(output_file_name, size_upper_bound)
         else:
             return False
     except FileNotFoundError as e:
