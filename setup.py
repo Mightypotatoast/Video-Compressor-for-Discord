@@ -4,7 +4,7 @@
 from cx_Freeze import setup, Executable
 
 executables = [
-    Executable(script="main.py", icon="/img/discord.ico", base="Win32GUI")
+    Executable(script="main.py", icon="img/discord.ico", base="Win32GUI")
 ]
 # ne pas mettre "base = ..." si le programme n'est pas en mode graphique
 
