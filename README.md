@@ -12,7 +12,7 @@ extract it anywhere
 
 ### Prerequisites
 
-None
+A working windows pc
 
 ## Usage
 
