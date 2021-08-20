@@ -6,7 +6,7 @@ I was bored and created this tool to compress video to fit Discord policy
 
 ## Getting Started
 
-Download transcord.zip
+Download [TransCord.zip](https://github.com/Mightypotatoast/Video-Compressor-for-Discord/releases)
 
 extract it anywhere
 
