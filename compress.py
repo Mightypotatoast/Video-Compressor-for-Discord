@@ -1,21 +1,24 @@
+import ffmpeg
 import os
 os.environ['path'] = 'bin/'
-import ffmpeg
-def compress_video(video_full_path, size_upper_bound, two_pass=True, filename_suffix='1'):
+
+
+def compress_video(video_full_path, size_upper_bound, frame_rate=30, two_pass=True, filename_suffix='_compressed'):
     """
     Compress video file to max-supported size.
     :param video_full_path: the video you want to compress.
     :param size_upper_bound: Max video size in KB.
+    :param frame_rate: Set the video max frame per second.
     :param two_pass: Set to True to enable two-pass calculation.
     :param filename_suffix: Add a suffix for new video.
-    :return: out_put_name or error
+    :return: True if succes, False if error
     """
     filename, extension = os.path.splitext(video_full_path)
     extension = '.mp4'
     output_file_name = filename + filename_suffix + extension
 
     total_bitrate_lower_bound = 11000
-    min_audio_bitrate = 32000
+    min_audio_bitrate = 64000
     max_audio_bitrate = 256000
     min_video_bitrate = 100000
 
@@ -25,17 +28,21 @@ def compress_video(video_full_path, size_upper_bound, two_pass=True, filename_su
         # Video duration, in s.
         duration = float(probe['format']['duration'])
         # Audio bitrate, in bps.
-        audio_bitrate = float(next((s for s in probe['streams'] if s['codec_type'] == 'audio'), None)['bit_rate'])
+        audio_bitrate = float(next(
+            (s for s in probe['streams'] if s['codec_type'] == 'audio'), None)['bit_rate'])
         # Target total bitrate, in bps.
-        target_total_bitrate = (size_upper_bound * 1024 * 8) / (1.073741824 * duration)
+        target_total_bitrate = (
+            size_upper_bound * 1024 * 8) / (1.073741824 * duration)
         if target_total_bitrate < total_bitrate_lower_bound:
             print('Bitrate is extremely low! Stop compress!')
             return False
 
         # Best min size, in kB.
-        best_min_size = (min_audio_bitrate + min_video_bitrate) * (1.073741824 * duration) / (8 * 1024)
+        best_min_size = (min_audio_bitrate + min_video_bitrate) * \
+            (1.073741824 * duration) / (8 * 1024)
         if size_upper_bound < best_min_size:
-            print('Quality not good! Recommended minimum size:', '{:,}'.format(int(best_min_size)), 'KB.')
+            print('Quality not good! Recommended minimum size:',
+                  '{:,}'.format(int(best_min_size)), 'KB.')
             # return False
 
         # Target audio bitrate, in bps.
@@ -58,18 +65,17 @@ def compress_video(video_full_path, size_upper_bound, two_pass=True, filename_su
         i = ffmpeg.input(video_full_path)
         if two_pass:
             ffmpeg.output(i, '/dev/null' if os.path.exists('/dev/null') else 'NUL',
-                          **{'c:v': 'libx264', 'b:v': video_bitrate, 'pass': 1, 'f': 'mp4'}
+                          **{'r': frame_rate, 'c:v': 'libx264', 'b:v': video_bitrate, 'pass': 1, 'f': 'mp4'}
                           ).overwrite_output().run()
-            ffmpeg.output(i, output_file_name,
-                          **{'c:v': 'libx264', 'b:v': video_bitrate, 'pass': 2, 'c:a': 'aac', 'b:a': audio_bitrate}
-                          ).overwrite_output().run()
+            ffmpeg.output(i, output_file_name, **{'r': frame_rate, 'c:v': 'libx264', 'b:v': video_bitrate,
+                          'pass': 2, 'c:a': 'aac', 'b:a': audio_bitrate}).overwrite_output().run()
         else:
             ffmpeg.output(i, output_file_name,
-                          **{'c:v': 'libx264', 'b:v': video_bitrate, 'c:a': 'aac', 'b:a': audio_bitrate}
+                          **{'r': frame_rate, 'c:v': 'libx264', 'b:v': video_bitrate, 'c:a': 'aac', 'b:a': audio_bitrate}
                           ).overwrite_output().run()
 
         if os.path.getsize(output_file_name) <= size_upper_bound * 1024:
-            return output_file_name
+            return True
         elif os.path.getsize(output_file_name) < os.path.getsize(video_full_path):  # Do it again
             return compress_video(output_file_name, size_upper_bound)
         else:
@@ -78,6 +84,7 @@ def compress_video(video_full_path, size_upper_bound, two_pass=True, filename_su
         print('You do not have ffmpeg installed!', e)
         print('You can install ffmpeg by reading https://github.com/kkroening/ffmpeg-python/issues/251')
         return False
+
 
 if __name__ == '__main__':
     file_name = compress_video('input.mp4', 50 * 1000)
