@@ -3,7 +3,7 @@ import os
 os.environ['path'] = 'bin/'
 
 
-def compress_video(video_full_path, size_upper_bound, frame_rate=30, two_pass=True, filename_suffix='_compressed'):
+def compress_video(video_full_path, size_upper_bound, frame_rate=30, two_pass=False, filename_suffix='_compressed'):
     """
     Compress video file to max-supported size.
     :param video_full_path: the video you want to compress.

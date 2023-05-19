@@ -8,7 +8,7 @@ from ttkthemes import ThemedTk
 
 def compress():
     r = compress_video(
-        text_entry.get(), limit_file_size.get(), frame_rate.get(), False
+        text_entry.get(), limit_file_size.get(), frame_rate.get()
     )
     if r == True:
         result_lab.config(text="Done !")
