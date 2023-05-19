@@ -8,7 +8,7 @@ from ttkthemes import ThemedTk
 
 def compress():
     r = compress_video(
-        text_entry.get(), limit_file_size.get(), frame_rate.get(), Npass.get()
+        text_entry.get(), limit_file_size.get(), frame_rate.get(), False
     )
     if r == True:
         result_lab.config(text="Done !")
@@ -47,10 +47,10 @@ button_explore = ttk.Button(
 # create a frame containing 3 radio button for different file size
 frame = Frame(wind)
 limit_file_size = IntVar()
-R1 = ttk.Radiobutton(frame, text="8MB", variable=limit_file_size, value=8000)
-R2 = ttk.Radiobutton(frame, text="50MB", variable=limit_file_size, value=50000)
-R3 = ttk.Radiobutton(frame, text="100MB",
-                     variable=limit_file_size, value=100000)
+R1 = ttk.Radiobutton(frame, text="25MB", variable=limit_file_size, value=25000)
+R2 = ttk.Radiobutton(frame, text="100MB", variable=limit_file_size, value=100000)
+R3 = ttk.Radiobutton(frame, text="500MB",
+                     variable=limit_file_size, value=500000)
 R1.invoke()  # R1 is selectionned by default
 
 # create a frame containing 2 radio button for different frame rate
@@ -59,14 +59,6 @@ frame_rate = IntVar()
 R_fps30 = ttk.Radiobutton(frame3, text="30fps", variable=frame_rate, value=30)
 R_fps60 = ttk.Radiobutton(frame3, text="60fps", variable=frame_rate, value=60)
 R_fps30.invoke()
-
-# create a frame containing 2 radio button for different number of passage
-frame4 = Frame(wind)
-Npass = BooleanVar()
-R_2pass = ttk.Radiobutton(frame4, text="Slow", variable=Npass, value=True)
-R_1pass = ttk.Radiobutton(frame4, text="Fast", variable=Npass, value=False)
-
-R_1pass.invoke()  # R_1pass is selectionned by default
 
 # Set the submit button, and set the font style and size
 btn = ttk.Button(wind, text="Go !", width=windWidth-20, command=compress)
@@ -88,10 +80,6 @@ R3.pack(side=LEFT)
 frame3.grid(column=1, row=9, pady=4)
 R_fps30.pack(side=LEFT)
 R_fps60.pack(side=LEFT)
-
-frame4.grid(column=1, row=10, pady=4)
-R_1pass.pack(side=LEFT)
-R_2pass.pack(side=LEFT)
 
 btn.grid(column=1, row=11)
 result_lab.grid(column=1, row=12)
