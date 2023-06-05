@@ -4,7 +4,15 @@ from tkinter import filedialog
 from compress import compress_video
 from tkinter import ttk
 from ttkthemes import ThemedTk
+from tkdnd import *
 
+def get_path(event):
+    if event.data.endswith(".mp4}"):
+        text_entry.delete(0, END)
+        sanitise_path = event.data
+        sanitise_path = sanitise_path.replace('{', '')
+        sanitise_path = sanitise_path.replace('}', '')
+        text_entry.insert(0, sanitise_path)
 
 def compress():
     r = compress_video(
@@ -24,7 +32,7 @@ def browseFiles():
     text_entry.insert(0, filename)
 
 
-wind = ThemedTk()  # Establishing top level control wind
+wind = TkinterDnD.Tk() # Establishing top level control wind
 windHeight = wind.winfo_height()
 windWidth = wind.winfo_width()
 
@@ -39,7 +47,11 @@ result_lab = ttk.Label(wind, text="")
 
 # create a frame containing an Entry and the button to explore files
 frame2 = Frame(wind)
+
 text_entry = ttk.Entry(frame2)
+wind.drop_target_register(DND_ALL)
+wind.dnd_bind("<<Drop>>", get_path)
+
 button_explore = ttk.Button(
     frame2, text="...", width=7, command=browseFiles
 )
